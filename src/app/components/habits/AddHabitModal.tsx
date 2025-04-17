@@ -204,17 +204,17 @@ export default function AddHabitModal({ isOpen, onClose, selectedDate }: AddHabi
     e.preventDefault();
     
     // Validate frequency data to prevent errors
-    let frequencyData = {};
+    let frequencyData = {
+      type: frequencyType === 'weekly' ? 'weekly' : 'daily' as 'daily' | 'weekly' | 'monthly',
+      repetitions: repetitions
+    };
+    
+    // Add days field for weekly frequency
     if (frequencyType === 'weekly') {
       frequencyData = {
-        type: frequencyType,
+        ...frequencyData,
+        type: 'weekly',
         days: selectedDays,
-        repetitions: repetitions,
-      };
-    } else {
-      frequencyData = {
-        type: 'daily',
-        repetitions: repetitions,
       };
     }
     
