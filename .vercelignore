@@ -1,0 +1,11 @@
+# Ignore ESLint configuration for deployment
+.eslintrc
+.eslintrc.*
+eslint.config.*
+
+# Other files/directories not needed for deployment
+README.md
+deploy-to-vercel.md
+.gitignore
+node_modules
+.git 

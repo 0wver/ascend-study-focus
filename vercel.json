@@ -1,0 +1,8 @@
+{
+  "name": "ascend-study-focus",
+  "framework": "nextjs",
+  "regions": ["auto"],
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next"
+} 
