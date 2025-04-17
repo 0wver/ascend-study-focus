@@ -117,7 +117,7 @@ export const useTimerStore = create<TimerState>()(
         }));
       },
       
-      startTimer: (timerId, sessionType = 'work', habitId = null) => {
+      startTimer: (timerId, sessionType = 'work', habitId = undefined) => {
         const state = get();
         const settings = state.timerSettings.find((s) => s.id === timerId);
         

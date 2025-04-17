@@ -7,7 +7,6 @@ const nextConfig = {
   assetPrefix: '',
   trailingSlash: false,
   output: 'standalone',
-  swcMinify: true,
 };
 
 module.exports = nextConfig; 
