@@ -203,9 +203,16 @@ export default function AddHabitModal({ isOpen, onClose, selectedDate }: AddHabi
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate frequency data to prevent errors
-    let frequencyData = {
-      type: frequencyType === 'weekly' ? 'weekly' : 'daily' as 'daily' | 'weekly' | 'monthly',
+    // Define the proper type for frequency data
+    type FrequencyData = {
+      type: 'daily' | 'weekly' | 'monthly';
+      repetitions: number;
+      days?: number[];
+    };
+    
+    // Create the base frequency data
+    let frequencyData: FrequencyData = {
+      type: frequencyType === 'weekly' ? 'weekly' : 'daily',
       repetitions: repetitions
     };
     
