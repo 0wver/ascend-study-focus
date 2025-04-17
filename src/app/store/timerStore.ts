@@ -4,6 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { TimerSettings, TimerSession, StudySession } from '../models/Timer';
 import { useHabitStore } from './habitStore';
 
+// Extended interface for StudySession that includes habitId
+interface StudySessionWithHabit extends Omit<StudySession, 'id' | 'duration'> {
+  habitId?: string;
+}
+
 interface TimerState {
   timerSettings: TimerSettings[];
   activeTimerId: string | null;
@@ -34,7 +39,7 @@ interface TimerState {
   tick: () => void;
   
   // Study Session CRUD
-  addStudySession: (session: Omit<StudySession, 'id' | 'duration'>) => string;
+  addStudySession: (session: StudySessionWithHabit) => string;
   updateStudySession: (id: string, updates: Partial<StudySession>) => void;
   deleteStudySession: (id: string) => void;
   completeStudySession: (id: string, focusRating?: number, notes?: string) => void;
@@ -133,7 +138,7 @@ export const useTimerStore = create<TimerState>()(
         const timerSession: TimerSession = {
           id: uuidv4(),
           timerSettingsId: timerId,
-          habitId: habitId || state.activeHabitId, // Link to habit if provided
+          habitId: habitId ?? (state.activeHabitId ?? undefined), // Use nullish coalescing
           startTime: new Date().toISOString(),
           duration: 0, // Will be updated when timer completes
           type: sessionType,
@@ -255,7 +260,7 @@ export const useTimerStore = create<TimerState>()(
             }
             
             // Start the next session
-            get().startTimer(state.activeTimerId, nextSessionType, state.activeHabitId);
+            get().startTimer(state.activeTimerId, nextSessionType, state.activeHabitId ?? undefined);
           }
         }
       },
@@ -310,19 +315,34 @@ export const useTimerStore = create<TimerState>()(
         });
       },
       
-      addStudySession: (session) => {
+      addStudySession: (session: StudySessionWithHabit) => {
         const id = uuidv4();
-        const newSession: StudySession = {
-          ...session,
-          id,
-          habitId: session.habitId || get().activeHabitId, // Link to active habit
-          duration: 0, // Will be calculated when session ends
-          startTime: session.startTime || new Date().toISOString(),
-        };
+        const startTime = new Date().toISOString();
+        const currentState = get();
         
         set((state) => ({
-          studySessions: [...state.studySessions, newSession],
+          studySessions: [
+            ...state.studySessions,
+            {
+              id,
+              subject: session.subject,
+              task: session.task,
+              tags: session.tags || [],
+              startTime: session.startTime || startTime,
+              notes: session.notes,
+              duration: 0, // Will be updated when completed
+              // Don't include habitId in the final object since it's not in StudySession interface
+            },
+          ],
         }));
+        
+        // If there's a habitId, set it as active
+        if (session.habitId) {
+          get().setActiveHabit(session.habitId);
+        } else if (currentState.activeHabitId) {
+          // Use existing active habit if available
+          get().setActiveHabit(currentState.activeHabitId);
+        }
         
         return id;
       },
