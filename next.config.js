@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
+    unoptimized: false,
   },
   basePath: '',
   assetPrefix: '',
-  trailingSlash: true,
+  trailingSlash: false,
+  output: 'standalone',
+  swcMinify: true,
 };
 
 module.exports = nextConfig; 
