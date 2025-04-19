@@ -1,3 +1,4 @@
+link:https://ascend-study-focus.vercel.app/
 # Ascend: Study Focus
 
 Ascend is a revolutionary habit tracker specifically designed for students, helping them cultivate consistent study habits, maximize focus, and gain a clear visual understanding of their academic progress.
